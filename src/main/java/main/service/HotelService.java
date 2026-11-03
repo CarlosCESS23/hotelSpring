@@ -1,11 +1,15 @@
 package main.service;
 
+import main.exception.DuplicationByIdException;
+import main.exception.NotFoundIdHotelException;
 import main.model.Hotel;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HotelService implements IHotelService{
@@ -13,7 +17,7 @@ public class HotelService implements IHotelService{
 
 
     public HotelService(){
-        this.listaHotel = lista_hotel();
+        this.listaHotel = new ArrayList<>(lista_hotel());
     }
     private List<Hotel> lista_hotel(){
         return List.of(
@@ -28,5 +32,41 @@ public class HotelService implements IHotelService{
     @Override
     public List<Hotel> buscarTodosHoteis() {
         return listaHotel;
+    }
+
+    @Override
+    public Hotel buscarPorId(long id) {
+        Optional<Hotel> hotelSelecionado =  this.listaHotel.stream()
+                .findAny()
+                .filter(hotel -> hotel.getHotid() == id);
+        if(hotelSelecionado.isEmpty()){
+            throw new NotFoundIdHotelException("Não foi possível encontra o ID, não existe");
+        }
+        return hotelSelecionado.get();
+    }
+
+    @Override
+    public Hotel addHotel(Hotel hotel) {
+        var verificar_duplicidade = buscarTodosHoteis().stream()
+                .anyMatch(hotels -> hotels.getHotid() == hotel.getHotid());
+
+        if (verificar_duplicidade){
+            throw new DuplicationByIdException("ID duplicado, não será feito adição");
+        }
+        listaHotel.add(hotel);
+        listaHotel.sort(Comparator.comparingLong(Hotel::getHotid));
+        return hotel;
+    }
+
+    @Override
+    public Hotel rmHotel(long id) {
+        Optional<Hotel> hotelSelecionado = this.listaHotel.stream()
+                .findAny()
+                .filter(hotel -> hotel.getHotid() == id);
+        if(hotelSelecionado.isEmpty()){
+            throw new NotFoundIdHotelException("Não foi encontrado o ID, talvez tenha sido apagado");
+        }
+        this.listaHotel.remove(hotelSelecionado.get());
+        return hotelSelecionado.get();
     }
 }
