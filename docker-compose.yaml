@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: 'postgres:15-alpine'
+    container_name: ContainerHotel
+    restart: always
+    environment:
+      POSTGRES_USER: ${POST_USER}
+      POSTGRES_PASSWORD: ${POST_SENHA}
+      POSTGRES_DB: ${POST_DB}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

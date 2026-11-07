@@ -1,14 +1,25 @@
 package main.model;
 
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 
+@Entity
 public class Hotel {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotid;
+    @Column(name= "hotname",unique = false,nullable = false)
     private String hotnome;
+
+    @Column(name = "hotcidade",unique= false, nullable = false)
     private String hotcidade;
+    @Column(name="hotvalordiaria",unique = false,nullable = false)
     private BigDecimal hotvalordiaria;
+    @Column(name="hotestrela",unique=false,nullable = true)
     private int hotestrelas;
+    @Column(name="hotdisponivel",unique = false,nullable = false)
     private boolean hotdisponivel;
 
     public Hotel(){

@@ -1,0 +1,6 @@
+CREATE TABLE Estado(
+    estid INTEGER PRIMARY KEY,
+    estnome VARCHAR(50) NOT NULL UNIQUE,
+    estibge VARCHAR(50) NOT NULL UNIQUE,
+    estsigla VARCHAR(5) NOT NULL UNIQUE
+)
